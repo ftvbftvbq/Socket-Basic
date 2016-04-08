@@ -1,15 +1,25 @@
+var name = getQueryVariable('name')|| '匿名用户';
+var room = getQueryVariable('room');
 var socket = io();
+
+console.log(name + ' wants to join ' + room);
 
 socket.on('connect', function() {
 	console.log('Connected to socket.io server!');
 });
 
 socket.on('message', function (message) {
+	var momentTimestamp = moment.utc(message.timestamp);
+	var $message = jQuery('.messages');
 	console.log('New message:');
 	console.log(message.text);
+
+	$message.append('<p><strong>'+ message.name + ' - ' + momentTimestamp.local().format('h:mm a') +'</strong><p>');
+	$message.append('<p>' + message.text +'</p>');
+
+	// jQuery('.messages').append('<p><strong>'+ momentTimestamp.local().format('h:mm a') + ': </strong>' + message.text + '</p>');
 });
-
-
+ 
 var $form = jQuery('#message-form');
 
 //监听表格submit事件触发
@@ -27,6 +37,7 @@ $form.on('submit', function (event) {
 
 	//触发通过socket发送相关文本信息到server
 	socket.emit('message', {
+		name: name,
 		text: $message.val()
 	});
 
