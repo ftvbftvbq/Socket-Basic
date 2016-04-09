@@ -4,8 +4,14 @@ var socket = io();
 
 console.log(name + ' wants to join ' + room);
 
+jQuery('.room-title').text(room);
+
 socket.on('connect', function() {
 	console.log('Connected to socket.io server!');
+	socket.emit('joinRoom', {
+		name : name,
+		room: room
+	})
 });
 
 socket.on('message', function (message) {
@@ -33,7 +39,7 @@ $form.on('submit', function (event) {
 	event.preventDefault();
 
 //定位到提交信息元素
-	var $message = $form.find('input[name=message]');
+	var $message = $form.find('textarea[name=message]');
 
 	//触发通过socket发送相关文本信息到server
 	socket.emit('message', {
