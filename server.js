@@ -12,6 +12,20 @@ var clientInfo = {};
 io.on('connection', function (socket) {
 	console.log('User connected via socket.io!');
 
+	socket.on('disconnect', function () {
+		var userdData = clientInfo[socket.id];
+
+		if (typeof userdData !== 'undefined') {
+			socket.leave(userdData.room);
+			io.to(userdData.room).emit('message', {
+			name: '系统登录时间',
+			text: userdData.name + ' 已离开!',
+			timestamp: moment().valueOf()
+			});
+			delete userdData;
+		}
+	});
+
 	socket.on('joinRoom', function (req) {
 		clientInfo[socket.id] = req;
 		socket.join(req.room);
