@@ -1,0 +1,14 @@
+.vertical-center {
+	min-height: 100vh;
+	margin: 0;
+	display: flex;
+	align-item: center;
+}
+
+h2 {
+	margin: 24px 0;
+}
+
+.messages p {
+	margin: 6px 0;
+}
